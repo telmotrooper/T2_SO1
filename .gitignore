@@ -1,0 +1,27 @@
+# Default rules.
+*.o
+*.a
+*.img
+*.pdf
+bochsout.txt
+bin/*
+bin/sbin/*
+bin/ubin/*
+doc/*-kernel
+*.bbl
+*.aux
+*.swp
+*.bcf
+*.blg
+*.fls
+*.log
+*.xml
+*.gz
+*.fdb_latexmk
+*.out
+*.dvi
+*.ini
+
+# Exceptions.
+!doc/paper/img/*.pdf
+!doc/paper/*.pdf
