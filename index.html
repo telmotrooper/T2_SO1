@@ -9,7 +9,7 @@
 	<div id="header">
 		<img src="img/logo.png" align="left"/>
 		<h1>Nanvix</h1>
-		A simple educational operating system.
+		An operating system for manycore processors.
 	</div>
 	<div id="nav">
 		<ul>
@@ -25,21 +25,41 @@
 	<div id="main">		
 		<h3>What is Nanvix?</h3>
 		<p align="justify">
-			Nanvix is a free and open source operating system created by Pedro
-			H. Penna for instructional purposes. It is designed to be simple
-			and small, yet modern and fully-featured. The project started
-			back in January 2011 and is still active and growing.
+			Nanvix is a Unix like operating system created by Pedro H.
+			Penna to address the demands of emerging manycore
+			processors. It targets cluster-based architectures that
+			rely on distributed and shared memory, and it was designed
+			from scratch to deliver cutting edge performance, while
+			enabling backward compatibility with existing software.
+
 		</p>
 		<p align="justify">
-			The Nanvix operating system has three main components: the 
-			<a href="./documentation.html">Nanvix Kernel</a> targets the
-			x86-based PC platform, has a monolithic and non-preemptive
-			architecture, and follows POSIX standards; the
-			<a href="./documentation.html">Nanvix C Library</a> is a platform-independent
-			implementation of the standard C library that has been
-			ported and adapted from the Free BSD 4.0 Operating System; finally,
-			<a href="./documentation.html">Nanvix Utilities</a>
-			consist of a collection of Unix-like utilities for Nanvix.
+			The Nanvix operating system has three main components:
+			<ul>
+			<li align="justify">
+				The <a href="./documentation.html">Nanvix Kernel</a>
+				provides an abstraction of the underlying hardware. It
+				presents a monolithic architecture, runs in privileged
+				and non interruptible mode, and features time sharing,
+				multiprogramming, multithreading and a virtual file
+				system.
+			</li>
+			<br>
+			<li align="justify">
+				The <a href="./documentation.html">Nanvix C
+				Library</a> consists in a platform-independent
+				implementation of the C Library.  It has been derived
+				from Red Hat's Newlib and it is fully compatible with
+				the ISO standards.
+			</li>
+			<br>
+			<li>
+				The <a href="./documentation.html">Nanvix
+				Utilities</a> is a set of bare bones user programs for
+				administrating, monitoring and benchmarking the
+				operating system.
+			</li>
+			</ul>
 		</p>
 	</div>
 	<div id="footer">
