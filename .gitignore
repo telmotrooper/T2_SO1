@@ -17,6 +17,9 @@
 # along with Nanvix.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Auto-generated
+bx_enh_dbg.ini
+
 # Default rules.
 *.o
 *.a
