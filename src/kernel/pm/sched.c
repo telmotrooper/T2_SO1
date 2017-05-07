@@ -98,6 +98,9 @@ PUBLIC void yield(void)
 		 * Process with higher
 		 * waiting time found.
 		 */
+
+		// Original: if (p->counter > next->counter)
+		// Agora checa também a prioridade do usuário
 		if ((p->counter + p->priority) > (next->counter + next->priority))
 		{
 			next->counter++;
