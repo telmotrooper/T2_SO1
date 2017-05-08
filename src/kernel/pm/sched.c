@@ -1,6 +1,7 @@
 /*
  * Copyright(C) 2011-2016 Pedro H. Penna   <pedrohenriquepenna@gmail.com>
  *              2015-2016 Davidson Francis <davidsondfgl@hotmail.com>
+ *              2016-2016 Subhra S. Sarkar <rurtle.coder@gmail.com>
  *
  * This file is part of Nanvix.
  *
@@ -33,6 +34,18 @@ PUBLIC void sched(struct process *proc)
 {
 	proc->state = PROC_READY;
 	proc->counter = 0;
+
+	/* <NOVO CÓDIGO>
+	 * Condição que permite que quando processos com prioridade mais alta
+	 * sejam adicionados a lista de pronto o processo atual seja preemptado. */
+	if (curr_proc->state == PROC_RUNNING && (proc->priority + proc->counter + proc->nice) > 
+	(curr_proc->priority + curr_proc->counter + curr_proc->nice) && proc != last_proc) {
+		proc->state = PROC_RUNNING;
+		proc->counter = PROC_QUANTUM;
+		switch_to(proc);
+		sched(curr_proc);
+	}
+	/* </NOVO CÓDIGO> */
 }
 
 /**
@@ -99,9 +112,10 @@ PUBLIC void yield(void)
 		 * waiting time found.
 		 */
 
-		// Original: if (p->counter > next->counter)
-		// Agora checa também a prioridade do usuário
-		if ((p->counter + p->priority) > (next->counter + next->priority))
+		/* ORIGINAL: if(p->counter > next->counter)
+		 * Agora 'priority' e 'nice' também são considerados
+		 * na escolha do próximo processo a ser executado. */
+		if ((p->priority + p->counter + p->nice) > (next->priority + next->counter + next->nice))
 		{
 			next->counter++;
 			next = p;
@@ -116,7 +130,7 @@ PUBLIC void yield(void)
 	}
 	
 	/* Switch to next process. */
-	next->priority = PRIO_USER;
+	// REMOVIDO: next->priority = PRIO_USER; // 40 (definido em pm.h)
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
 	switch_to(next);
