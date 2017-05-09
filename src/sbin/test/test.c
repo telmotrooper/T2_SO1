@@ -229,7 +229,11 @@ static void work_io(void)
 static int sched_test0(void)
 {
 	pid_t pid;
+	struct tms timing; /* Timing information. */
+	clock_t t0, t1;    /* Elapsed times.      */
 	
+	t0 = times(&timing);
+
 	pid = fork();
 	
 	/* Failed to fork(). */
@@ -242,8 +246,13 @@ static int sched_test0(void)
 		work_cpu();
 		_exit(EXIT_SUCCESS);
 	}
-	
+
 	wait(NULL);
+
+	t1 = times(&timing);
+
+	if (flags & VERBOSE)
+		printf("  Elapsed: %d\n", t1 - t0);
 	
 	return (0);
 }
@@ -259,7 +268,11 @@ static int sched_test0(void)
 static int sched_test1(void)
 {
 	pid_t pid;
-		
+	struct tms timing; /* Timing information. */
+	clock_t t0, t1;    /* Elapsed times.      */
+
+	t0 = times(&timing);
+
 	pid = fork();
 	
 	/* Failed to fork(). */
@@ -280,8 +293,13 @@ static int sched_test1(void)
 		work_io();
 		_exit(EXIT_SUCCESS);
 	}
-		
+
 	wait(NULL);
+
+	t1 = times(&timing);
+
+	if (flags & VERBOSE)
+		printf("  Elapsed: %d\n", t1 - t0);
 	
 	return (0);
 }
@@ -296,7 +314,11 @@ static int sched_test1(void)
 static int sched_test2(void)
 {
 	pid_t pid[4];
+	struct tms timing; /* Timing information. */
+	clock_t t0, t1;    /* Elapsed times.      */
 	
+	t0 = times(&timing);
+
 	for (int i = 0; i < 4; i++)
 	{
 		pid[i] = fork();
@@ -323,7 +345,7 @@ static int sched_test2(void)
 			}
 		}
 	}
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		if (i & 1)
@@ -335,6 +357,11 @@ static int sched_test2(void)
 			wait(NULL);
 		}
 	}
+
+	t1 = times(&timing);
+
+	if (flags & VERBOSE)
+		printf("  Elapsed: %d\n", t1 - t0);
 	
 	return (0);
 }

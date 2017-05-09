@@ -1,7 +1,6 @@
 /*
  * Copyright(C) 2011-2016 Pedro H. Penna   <pedrohenriquepenna@gmail.com>
  *              2015-2016 Davidson Francis <davidsondfgl@hotmail.com>
- *              2016-2016 Subhra S. Sarkar <rurtle.coder@gmail.com>
  *
  * This file is part of Nanvix.
  *
@@ -24,6 +23,10 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <nanvix/klib.h>
+
+/* calculo da prioridade de um processo, de forma que processo com menor valor tem maior prioridade */
+#define PRIORIDADE(p) (p->priority - p->counter + p->nice)
 
 /**
  * @brief Schedules a process to execution.
@@ -34,18 +37,14 @@ PUBLIC void sched(struct process *proc)
 {
 	proc->state = PROC_READY;
 	proc->counter = 0;
-
-	/* <NOVO CÓDIGO>
-	 * Condição que permite que quando processos com prioridade mais alta
-	 * sejam adicionados a lista de pronto o processo atual seja preemptado. */
-	if (curr_proc->state == PROC_RUNNING && (proc->priority + proc->counter + proc->nice) > 
-	(curr_proc->priority + curr_proc->counter + curr_proc->nice) && proc != last_proc) {
+	/* condição que permite que quando processos com prioridade mais alta sejam adicionados 
+	   a lista de pronto o processo atual é preemptado */
+	if (curr_proc->state == PROC_RUNNING && PRIORIDADE(proc) < PRIORIDADE(curr_proc) && proc != last_proc) {
 		proc->state = PROC_RUNNING;
 		proc->counter = PROC_QUANTUM;
 		switch_to(proc);
 		sched(curr_proc);
 	}
-	/* </NOVO CÓDIGO> */
 }
 
 /**
@@ -79,6 +78,7 @@ PUBLIC void yield(void)
 {
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
+	int prioridadeNext;   /* prioridade do proximo processo */
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -101,6 +101,7 @@ PUBLIC void yield(void)
 
 	/* Choose a process to run next. */
 	next = IDLE;
+	prioridadeNext = PRIORIDADE(next);
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
 		/* Skip non-ready process. */
@@ -111,14 +112,13 @@ PUBLIC void yield(void)
 		 * Process with higher
 		 * waiting time found.
 		 */
-
-		/* ORIGINAL: if(p->counter > next->counter)
-		 * Agora 'priority' e 'nice' também são considerados
-		 * na escolha do próximo processo a ser executado. */
-		if ((p->priority + p->counter + p->nice) > (next->priority + next->counter + next->nice))
+		/* inicial if(p->counter > next->counter)
+		   alterado if((p->counter + p->priority) > (next->counter + next->priority)) */
+		if (PRIORIDADE(p) < prioridadeNext)
 		{
 			next->counter++;
 			next = p;
+			prioridadeNext = PRIORIDADE(next);
 		}
 			
 		/*
@@ -130,7 +130,7 @@ PUBLIC void yield(void)
 	}
 	
 	/* Switch to next process. */
-	// REMOVIDO: next->priority = PRIO_USER; // 40 (definido em pm.h)
+	//next->priority = PRIO_USER;
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
 	switch_to(next);
