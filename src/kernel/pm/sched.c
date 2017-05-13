@@ -39,17 +39,6 @@ PUBLIC void sched(struct process *proc)
 {
 	proc->state = PROC_READY;
 	proc->counter = 0;
-
-	// /* <NOVO CÓDIGO>
-	//  * Condição que permite que quando processos com prioridade mais alta
-	//  * sejam adicionados na lista de pronto o processo atual seja preemptado. */
-	// if (curr_proc->state == PROC_RUNNING && PRIORIDADE(proc) < PRIORIDADE(curr_proc) && proc != last_proc) {
-	// 	proc->state = PROC_RUNNING;
-	// 	proc->counter = PROC_QUANTUM;
-	// 	switch_to(proc);
-	// 	sched(curr_proc);
-	// }
-	// /* </NOVO CÓDIGO> */
 }
 
 /**
