@@ -40,16 +40,16 @@ PUBLIC void sched(struct process *proc)
 	proc->state = PROC_READY;
 	proc->counter = 0;
 
-	/* <NOVO CÓDIGO>
-	 * Condição que permite que quando processos com prioridade mais alta
-	 * sejam adicionados na lista de pronto o processo atual seja preemptado. */
-	if (curr_proc->state == PROC_RUNNING && PRIORIDADE(proc) < PRIORIDADE(curr_proc) && proc != last_proc) {
-		proc->state = PROC_RUNNING;
-		proc->counter = PROC_QUANTUM;
-		switch_to(proc);
-		sched(curr_proc);
-	}
-	/* </NOVO CÓDIGO> */
+	// /* <NOVO CÓDIGO>
+	//  * Condição que permite que quando processos com prioridade mais alta
+	//  * sejam adicionados na lista de pronto o processo atual seja preemptado. */
+	// if (curr_proc->state == PROC_RUNNING && PRIORIDADE(proc) < PRIORIDADE(curr_proc) && proc != last_proc) {
+	// 	proc->state = PROC_RUNNING;
+	// 	proc->counter = PROC_QUANTUM;
+	// 	switch_to(proc);
+	// 	sched(curr_proc);
+	// }
+	// /* </NOVO CÓDIGO> */
 }
 
 /**
@@ -83,7 +83,6 @@ PUBLIC void yield(void)
 {
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
-	int prioridadeNext;   /* prioridade do proximo processo */
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -106,7 +105,6 @@ PUBLIC void yield(void)
 
 	/* Choose a process to run next. */
 	next = IDLE;
-	prioridadeNext = PRIORIDADE(next);
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
 		/* Skip non-ready process. */
@@ -121,11 +119,10 @@ PUBLIC void yield(void)
 		/* ORIGINAL: if(p->counter > next->counter)
 		 * Agora 'priority' e 'nice' também são considerados
 		 * na escolha do próximo processo a ser executado. */
-		if (PRIORIDADE(p) < prioridadeNext)
+		if (PRIORIDADE(p) < PRIORIDADE(next))
 		{
 			next->counter++;
 			next = p;
-			prioridadeNext = PRIORIDADE(next);
 		}
 			
 		/*
@@ -137,7 +134,7 @@ PUBLIC void yield(void)
 	}
 	
 	/* Switch to next process. */
-	// REMOVIDO: next->priority = PRIO_USER; // 40 (definido em pm.h)
+	next->priority = PRIO_USER; // 40 (definido em pm.h)
 	next->state = PROC_RUNNING;
 	next->counter = PROC_QUANTUM;
 	switch_to(next);
