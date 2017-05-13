@@ -119,7 +119,7 @@ PUBLIC void yield(void)
 		 * time of process.
 		 */
 		else
-			next->counter = next->counter + 5;
+			p->counter = p->counter + 5;
 	}
 	
 	/* Switch to next process. */
