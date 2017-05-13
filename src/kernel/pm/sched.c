@@ -110,7 +110,7 @@ PUBLIC void yield(void)
 		 * na escolha do próximo processo a ser executado. */
 		if (PRIORIDADE(p) < PRIORIDADE(next))
 		{
-			next->counter = next->counter + 5; // aumentamos a taxa de envelhecimento
+			next->counter = next->counter + 5;
 			next = p;
 		}
 			
@@ -119,7 +119,7 @@ PUBLIC void yield(void)
 		 * time of process.
 		 */
 		else
-			p->counter++;
+			next->counter = next->counter + 5;
 	}
 	
 	/* Switch to next process. */
